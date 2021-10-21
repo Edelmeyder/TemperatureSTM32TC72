@@ -8,8 +8,8 @@
 
 /* Overflow */
 /* nro de tick del sistema en el que se debe ejecutar la tarea y reiniciar el contador */
-#define OVERF_READ 250  //  0.2s
-#define OVERF_WRITE 5000  // 5 s
+#define OVERF_READ 5  //  0.5s
+#define OVERF_WRITE 50  // 5 s
 
 /* Out of Phase */
 /* Configuracion para evitar que las tareas se deban ejecutar en el mismo tick del sistema */

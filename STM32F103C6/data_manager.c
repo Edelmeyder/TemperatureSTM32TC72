@@ -6,9 +6,10 @@ uint16_t comp2(uint16_t);
 
 //static uint16_t therm_buffer[THERM_BUFFERSIZE];
 static uint16_t aux;
+static uint8_t count;
 static volatile int16_t tempe;
 
-static volatile uint8_t printable[] = {'+','0','0','0',',','0','0'};
+static volatile uint8_t printable[] = {'T','E','M','P',':','+','0','0','0',',','0','0',' ','C'};
 
 /*int store(uint16_t value)
 {
@@ -34,27 +35,30 @@ static volatile uint8_t printable[] = {'+','0','0','0',',','0','0'};
 
 int DATAMANAGER_Init() {
     tempe = 0;
+	count = 0;
     return 0;
 }
 
 int DATAMANAGER_Read() {
+	count++;
     aux = SENSOR_GetTemperature();
 	if (aux > 0x0200)
 		tempe = tempe - comp2(aux);
 	else
 		tempe = tempe + aux;
-	DATAMANAGER_Write();
+	//DATAMANAGER_Write();
     return 0;
 }
 
 int DATAMANAGER_Write() {
 	volatile uint16_t centi, deci, uni, dece, cente;
 	if (tempe < 0) {
-		printable[0] = '-';
+		printable[5] = '-';
 		tempe = tempe * (-1);
 	} else
-		printable[0] = '+';
-	//tempe = tempe/20;
+		printable[5] = '+';
+	tempe = tempe/count;
+	count = 0;
 	tempe = tempe * 25; // tempe *= 25;
 	centi = (tempe - 10*(tempe/10)); // === tempe % 10
 	tempe = tempe / 10;
@@ -66,12 +70,12 @@ int DATAMANAGER_Write() {
 	tempe = tempe / 10;
 	cente = (tempe - 10*(tempe/10));
 	tempe = 0;
-	printable[6] = centi + 48;
-	printable[5] = deci + 48;
-	printable[3] = uni + 48;
-	printable[2] = dece + 48;
-	printable[1] = cente + 48;
-	LCD_sendString(printable, 7);
+	printable[11] = centi + 48;
+	printable[10] = deci + 48;
+	printable[8] = uni + 48;
+	printable[7] = dece + 48;
+	printable[6] = cente + 48;
+	LCD_sendString(printable, 14);
 	LCD_goToXY(0,0);
     return 0;
 }

@@ -9,10 +9,6 @@
 
 /************** Device Setup *************/
 
-//Config
-#define THERM_BUFFERSIZE 20
-
-/*****************************************/
 
 /* Public Functions */
 int DATAMANAGER_Init(void);

@@ -18,11 +18,11 @@ int SENSOR_Init(void) {
 uint16_t SENSOR_GetTemperature(void) {
    uint16_t temp = 0;
    GPIOA->BSRR = (1<<4); //enable slave
-   SENSOR_Transfer(0x8004); //activate one temperature conversion on the sensor
+   SENSOR_Transfer(0x8011); //activate one temperature conversion on the sensor
 	GPIOA->BRR = (1<<4);
    delay_conversion(); 
 	GPIOA->BSRR = (1<<4); 
-   temp = (SENSOR_Transfer(0x0200)<<2);
+   temp = (SENSOR_Transfer(0x0200)<<2) & 0x03FF;
    temp |= (SENSOR_Transfer(0x0000)>>14);
    GPIOA->BRR = (1<<4);
    return temp;

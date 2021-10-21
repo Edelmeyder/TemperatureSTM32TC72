@@ -28,7 +28,7 @@ int seos_init(void)
 	counter_write = 0;//OVERF_WRITE - OOPH_WRITE;
 	counter_read  = 0;//OVERF_READ - OOPH_READ;
 
-	if (SysTick_Config(SystemCoreClock / 1000)){
+	if (SysTick_Config(SystemCoreClock / 10)){
 		//error handling
 	}
 
