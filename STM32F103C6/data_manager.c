@@ -4,63 +4,59 @@
 int store(uint16_t value);
 uint16_t comp2(uint16_t);
 
-//static uint16_t therm_buffer[THERM_BUFFERSIZE];
+
 static uint16_t aux;
 static uint8_t count;
 static volatile int16_t tempe;
+//La variable de temperatura es signed para poder sumar y restar hasta valores negativos
 
 static volatile uint8_t printable[] = {'T','E','M','P',':','+','0','0','0',',','0','0',' ','C'};
-
-/*int store(uint16_t value)
-{
-		therm_buffer[therm_pointer++] = value;
-		therm_pointer = therm_pointer % THERM_BUFFERSIZE;
-	return 0;
-}*/
-
-/*float get_printable()
-{
-    float average = 0;
-	  int i;
-	
-    for(i = 0 ; i < THERM_BUFFERSIZE ; i++ ){
-        average+=therm_buffer[i];
-    }
-		//average*=THERM_INVERSE;
-		average=average/50.0f;
-    return average;
-}*/
 
 /* Public Functions */
 
 int DATAMANAGER_Init() {
+	// Inicializa la temperatura y el contador de mediciones
     tempe = 0;
 	count = 0;
     return 0;
 }
 
 int DATAMANAGER_Read() {
-	count++;
-    aux = SENSOR_GetTemperature();
+	count++; // Incrementa el contador de mediciones
+	aux = SENSOR_GetTemperature();
+	/* Obtiene la lectura del sensor y la guardo en una variable 
+	auxiliar para anlizar si es negativo o positivo */
 	if (aux > 0x0200)
 		tempe = tempe - comp2(aux);
 	else
 		tempe = tempe + aux;
-	//DATAMANAGER_Write();
+	// Si es temperatura negativa se resta su complemeto A2 se suma cc
+#ifdef DEBUG
+	// Para debuguear se escribe cada ves
+	DATAMANAGER_Write();
+#endif
     return 0;
 }
 
 int DATAMANAGER_Write() {
 	volatile uint16_t centi, deci, uni, dece, cente;
+	/*Las variables centi, deci, uni, dece, cente para contener cada dígito de la
+	temperatura no deberían ser necesarias. Se hizo de este modo a razón de varios problemas 
+	al compilar/simular */
 	if (tempe < 0) {
 		printable[5] = '-';
 		tempe = tempe * (-1);
 	} else
 		printable[5] = '+';
-	tempe = tempe/count;
-	count = 0;
-	tempe = tempe * 25; // tempe *= 25;
-	centi = (tempe - 10*(tempe/10)); // === tempe % 10
+	/* Si la temperatura acumulada es negativa se establece el signo - y se invierte el valor para realizar las cuentas
+	caso contrario se establece el signo + */
+#ifndef DEBUG
+	tempe = tempe/count; // Se obtiene el promedio
+#endif
+	count = 0; //Se reinicia el contador de mediciones
+	tempe = tempe * 25; /* Se multiplica por 25 para obtener la temperatura en centécimas de grado centígrado
+						es por 25 ya que 25 centécimas de grado es el paso del sensor */
+	centi = (tempe - 10*(tempe/10));
 	tempe = tempe / 10;
 	deci = (tempe - 10*(tempe/10));
 	tempe = tempe / 10;
@@ -75,11 +71,15 @@ int DATAMANAGER_Write() {
 	printable[8] = uni + 48;
 	printable[7] = dece + 48;
 	printable[6] = cente + 48;
-	LCD_sendString(printable, 14);
+	/* Todo este bloque de instrucciones obtiene las reprecentaciones ascii de cada dígito 
+	y las prepara para enviar al LCD; se podría simplificar pero se hizo así por errores al simular */
 	LCD_goToXY(0,0);
+	LCD_sendString(printable, 14);
+	// Se manda a escribir la temperatura al LCD
     return 0;
 }
 
 uint16_t comp2(uint16_t n){
+	// Retorna el complemento A2 de un número negativo de 10 bit almacenado en una variable de 16 bits
 	return (~n & 0x01FF) + 1;
 }

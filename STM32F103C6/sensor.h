@@ -5,9 +5,6 @@
 #include <inttypes.h>
 #include <stm32f103x6.h>
 
-#include "lcd.h"
-#include "sensor.h"
-
 
 /* Public Functions */
 int SENSOR_Init(void);

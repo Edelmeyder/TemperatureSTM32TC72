@@ -7,6 +7,7 @@
 #include "sensor.h"
 #include <stdio.h>
 
+//#define DEBUG
 /************** Device Setup *************/
 
 
