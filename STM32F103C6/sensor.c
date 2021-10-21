@@ -37,10 +37,10 @@ uint16_t SENSOR_Transfer(uint16_t cmd) {
 }
 
 void delay_conversion(void) {
-	/* Demora 170 ms. 
+	/* Demora 160 ms. 
 	La medición del sensor toma 150 ms así que se espera 
 	un poco más para asegurarse de que terminó*/
 	uint16_t l, i;
-	for(i = 0; i < 180; i++)
-	for(l = 0; l < 10000; l++){}
+	for(i = 0; i < 160; i++)
+	for(l = 0; l < 12000; l++){}
 }

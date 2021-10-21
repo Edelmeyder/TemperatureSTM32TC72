@@ -5,7 +5,7 @@
 #include <inttypes.h>
 #include <stdio.h>
 
-//#define SIMU
+#define SIMU
 /* Overflow */
 /* nro de tick del sistema en el que se debe ejecutar la tarea y reiniciar el contador */
 #ifndef SIMU

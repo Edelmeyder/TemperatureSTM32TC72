@@ -25,7 +25,7 @@ int seos_init(void)
 	counter_write = OOPH_WRITE;
 	counter_read  = OOPH_READ;
 
-	//se configura el sistem tick para interrupir una vez cada 10ms
+	//se configura el sistem tick para interrupir una vez cada 100 ms
 	if (SysTick_Config(SystemCoreClock / 10)){
 		//error handling
 	}

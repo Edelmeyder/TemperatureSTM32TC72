@@ -72,5 +72,5 @@ void LCD_goToXY(uint8_t x, uint8_t y) {
 void delay_us(uint16_t t) {
 	uint16_t l, i;
 	for(i = 0; i < t; i++)
-		for(l = 0; l < 10; l++){}
+		for(l = 0; l < 12; l++){}
 }
